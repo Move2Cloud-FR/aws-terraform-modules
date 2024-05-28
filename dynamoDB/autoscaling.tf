@@ -14,7 +14,7 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 resource "aws_iam_role" "auto_scale_role" {
-  name               = "${var.APP_NAME}-autoscaling-role"
+  name               = "${var.DB_TABLE_NAME}-autoscaling-role"
   assume_role_policy = data.aws_iam_policy_document.assume_role.json
 }
 
@@ -32,7 +32,7 @@ data "aws_iam_policy_document" "autoscaler" {
 }
 
 resource "aws_iam_role_policy" "autoscaler" {
-  name   = "${var.APP_NAME}-autoscaler-dynamodb"
+  name   = "${var.DB_TABLE_NAME}-autoscaler-dynamodb"
   role   = aws_iam_role.auto_scale_role.id
   policy = data.aws_iam_policy_document.autoscaler.json
 }
@@ -52,7 +52,7 @@ data "aws_iam_policy_document" "autoscaler_cloudwatch" {
 }
 
 resource "aws_iam_role_policy" "autoscaler_cloudwatch" {
-  name   = "${var.APP_NAME}-autoscaler-cloudwatch"
+  name   = "${var.DB_TABLE_NAME}-autoscaler-cloudwatch"
   role   = aws_iam_role.auto_scale_role.id
   policy = data.aws_iam_policy_document.autoscaler_cloudwatch.json
 }

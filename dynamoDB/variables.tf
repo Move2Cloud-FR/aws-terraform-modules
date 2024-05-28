@@ -1,6 +1,5 @@
 ########################### DynamoDB Table ###############################
 variable "DB_TABLE_NAME" {}
-variable "APP_NAME" {}
 variable "AWS_REGION" {}
 variable "AUTOSCALE_READ_TARGET" {}
 variable "AUTOSCALE_MIN_READ_CAPACITY" {}
