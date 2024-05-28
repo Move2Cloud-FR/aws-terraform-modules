@@ -135,7 +135,7 @@ resource "aws_route_table" "PRIVATE_APP_SUBNET_ROUTE_TABLE" {
   }
 
   tags = {
-      Name = "${var.APP_NAME}_${var.ENV_PREFIX}_Private_Route_Table"
+      Name = "${var.APP_NAME}_${var.ENV_PREFIX}_App_Private_Route_Table"
       Application = "${var.APP_NAME}"
       Environment = "${var.ENV_PREFIX}"
   }
@@ -160,4 +160,26 @@ resource "aws_subnet" "PRIVATE_DB_SUBNET" {
       Application = "${var.APP_NAME}"
       Environment = "${var.ENV_PREFIX}"
   }
+}
+
+resource "aws_route_table" "PRIVATE_DB_SUBNET_ROUTE_TABLE" {
+  count     = length(var.PRIVATE_DB_SUBNET_CIDRS) > 0 ? 1 : 0
+  vpc_id    = aws_vpc.VPC.id
+
+  route {
+    cidr_block     = var.VPC_CIDR
+    gateway_id     = "local"
+  }
+
+  tags = {
+      Name = "${var.APP_NAME}_${var.ENV_PREFIX}_DB_Private_Route_Table"
+      Application = "${var.APP_NAME}"
+      Environment = "${var.ENV_PREFIX}"
+  }
+}
+
+resource "aws_route_table_association" "PRIVATE_DB_SUBNETS_ROUTE_TABLE" {
+  count          = length(var.PRIVATE_DB_SUBNET_CIDRS) > 0 ? length(var.PRIVATE_DB_SUBNET_CIDRS) : 0
+  subnet_id      = element(aws_subnet.PRIVATE_DB_SUBNET.*.id, count.index)
+  route_table_id = aws_route_table.PRIVATE_DB_SUBNET_ROUTE_TABLE[0].id
 }
