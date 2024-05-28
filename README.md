@@ -4,3 +4,4 @@ Terraform modules for creating :
 - ecs-cluster (create ecs cluster)
 - ecs-service (create ecs service with fargate instances)
 - ecs-ec2 (create ecs service with ec2 instances)
+- DynamoDB (Non relational DB on AWS)
