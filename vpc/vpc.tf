@@ -66,7 +66,7 @@ resource "aws_subnet" "PUBLIC_SUBNET" {
   map_public_ip_on_launch = true
 
   tags = {
-      Name = "${var.APP_NAME}-${var.ENV_PREFIX}-public-subnet-${count.index + 1}"
+      Name = "public-subnet-${count.index + 1}"
       Application = "${var.APP_NAME}"
       Environment = "${var.ENV_PREFIX}"
   }
@@ -101,7 +101,7 @@ resource "aws_subnet" "PRIVATE_APP_SUBNET" {
   availability_zone = "${var.AWS_REGION}${var.SUBNET_AZS[count.index]}"
 
   tags = {
-      Name = "${var.APP_NAME}-${var.ENV_PREFIX}-private-application-subnet-${count.index + 1}"
+      Name = "private-application-subnet-${count.index + 1}"
       Application = "${var.APP_NAME}"
       Environment = "${var.ENV_PREFIX}"
   }
@@ -156,7 +156,7 @@ resource "aws_subnet" "PRIVATE_DB_SUBNET" {
   availability_zone = "${var.AWS_REGION}${var.SUBNET_AZS[count.index]}"
 
   tags = {
-      Name = "${var.APP_NAME}-${var.ENV_PREFIX}-private-database-subnet-${count.index + 1}"
+      Name = "private-database-subnet-${count.index + 1}"
       Application = "${var.APP_NAME}"
       Environment = "${var.ENV_PREFIX}"
   }
