@@ -22,8 +22,8 @@ resource "aws_internet_gateway" "INTERNET_GATEWAY" {
     }
 }
 
-resource "aws_route_table" "MAIN_ROUTE_TABLE" {
-    vpc_id = aws_vpc.VPC.id
+resource "aws_default_route_table" "MAIN_ROUTE_TABLE" {
+    default_route_table_id = aws_vpc.VPC.default_route_table_id
     
     route {
         cidr_block = "0.0.0.0/0"
@@ -35,11 +35,6 @@ resource "aws_route_table" "MAIN_ROUTE_TABLE" {
         Application = "${var.APP_NAME}"
         Environment = "${var.ENV_PREFIX}"
     }
-}
-
-resource "aws_main_route_table_association" "MAIN_ROUTE_TABLE_ASSOCIATION" {
-    vpc_id         = aws_vpc.VPC.id
-    route_table_id = aws_route_table.MAIN_ROUTE_TABLE.id
 }
 
 resource "aws_vpc_dhcp_options" "DNS_RESOLVER" {
