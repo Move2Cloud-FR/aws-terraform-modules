@@ -16,7 +16,7 @@ resource "aws_internet_gateway" "INTERNET_GATEWAY" {
     vpc_id = aws_vpc.VPC.id
 
     tags = {
-        Name = "${var.APP_NAME}_${var.ENV_PREFIX}_internet_gateway"
+        Name = "${var.APP_NAME}-${var.ENV_PREFIX}-internet-gateway"
         Application = "${var.APP_NAME}"
         Environment = "${var.ENV_PREFIX}"
     }
@@ -156,7 +156,7 @@ resource "aws_subnet" "PRIVATE_DB_SUBNET" {
   availability_zone = "${var.AWS_REGION}${var.SUBNET_AZS[count.index]}"
 
   tags = {
-      Name = "${var.APP_NAME}-${var.ENV_PREFIX}-private-database_subnet-${count.index + 1}"
+      Name = "${var.APP_NAME}-${var.ENV_PREFIX}-private-database-subnet-${count.index + 1}"
       Application = "${var.APP_NAME}"
       Environment = "${var.ENV_PREFIX}"
   }
