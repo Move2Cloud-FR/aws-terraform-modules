@@ -57,21 +57,7 @@ resource "aws_vpc_dhcp_options_association" "DHCP_OPTIONS_ASSOCIATION" {
     dhcp_options_id = aws_vpc_dhcp_options.DNS_RESOLVER.id
 }
 
-
-
-resource "aws_subnet" "PRIVATE_SUBNET" {
-  count             = length(var.PRIVATE_SUBNET_CIDRS)
-  vpc_id            = aws_vpc.VPC.id
-  cidr_block        = var.PRIVATE_SUBNET_CIDRS[count.index]
-  availability_zone = "${var.AWS_REGION}${var.SUBNET_AZS[count.index]}"
-
-  tags = {
-      Name = "${var.APP_NAME}_${var.ENV_PREFIX}_Private_Subnet${count.index + 1}"
-      Application = "${var.APP_NAME}"
-      Environment = "${var.ENV_PREFIX}"
-  }
-}
-
+/* Public subnets */
 resource "aws_subnet" "PUBLIC_SUBNET" {
   count                   = length(var.PUBLIC_SUBNET_CIDRS)
   vpc_id                  = aws_vpc.VPC.id
@@ -107,15 +93,28 @@ resource "aws_route_table_association" "PUBLIC_SUBNETS_ROUTE_TABLE" {
   route_table_id = aws_route_table.PUBLIC_SUBNET_ROUTE_TABLE.id
 }
 
-// IF var.PRIVATE_SUBNET_CIDRS is empty, do not create the following ressources :
+/* Private Application subnets - With Nat Gateway */
+resource "aws_subnet" "PRIVATE_APP_SUBNET" {
+  count             = length(var.PRIVATE_APP_SUBNET_CIDRS)
+  vpc_id            = aws_vpc.VPC.id
+  cidr_block        = var.PRIVATE_APP_SUBNET_CIDRS[count.index]
+  availability_zone = "${var.AWS_REGION}${var.SUBNET_AZS[count.index]}"
+
+  tags = {
+      Name = "${var.APP_NAME}_${var.ENV_PREFIX}_Private_App_Subnet${count.index + 1}"
+      Application = "${var.APP_NAME}"
+      Environment = "${var.ENV_PREFIX}"
+  }
+}
+
 resource "aws_eip" "ELASTIC_IP" {
-    count         = length(var.PRIVATE_SUBNET_CIDRS) > 0 ? 1 : 0
+    count         = length(var.PRIVATE_APP_SUBNET_CIDRS) > 0 ? 1 : 0
     domain        = "vpc"
     depends_on    = [aws_internet_gateway.INTERNET_GATEWAY]
 }
 
 resource "aws_nat_gateway" "NAT_GATEWAY" {
-    count         = length(var.PRIVATE_SUBNET_CIDRS) > 0 ? 1 : 0
+    count         = length(var.PRIVATE_APP_SUBNET_CIDRS) > 0 ? 1 : 0
     subnet_id     = aws_subnet.PUBLIC_SUBNET[0].id
     allocation_id = aws_eip.ELASTIC_IP[0].id
     
@@ -126,8 +125,8 @@ resource "aws_nat_gateway" "NAT_GATEWAY" {
     }
 }
 
-resource "aws_route_table" "PRIVATE_SUBNET_ROUTE_TABLE" {
-  count     = length(var.PRIVATE_SUBNET_CIDRS) > 0 ? 1 : 0
+resource "aws_route_table" "PRIVATE_APP_SUBNET_ROUTE_TABLE" {
+  count     = length(var.PRIVATE_APP_SUBNET_CIDRS) > 0 ? 1 : 0
   vpc_id    = aws_vpc.VPC.id
 
   route {
@@ -142,8 +141,23 @@ resource "aws_route_table" "PRIVATE_SUBNET_ROUTE_TABLE" {
   }
 }
 
-resource "aws_route_table_association" "PRIVATE_SUBNETS_ROUTE_TABLE" {
-  count          = length(var.PRIVATE_SUBNET_CIDRS) > 0 ? length(var.PRIVATE_SUBNET_CIDRS) : 0
-  subnet_id      = element(aws_subnet.PRIVATE_SUBNET.*.id, count.index)
-  route_table_id = aws_route_table.PRIVATE_SUBNET_ROUTE_TABLE[0].id
+resource "aws_route_table_association" "PRIVATE_APP_SUBNETS_ROUTE_TABLE" {
+  count          = length(var.PRIVATE_APP_SUBNET_CIDRS) > 0 ? length(var.PRIVATE_APP_SUBNET_CIDRS) : 0
+  subnet_id      = element(aws_subnet.PRIVATE_APP_SUBNET.*.id, count.index)
+  route_table_id = aws_route_table.PRIVATE_APP_SUBNET_ROUTE_TABLE[0].id
+}
+
+/* Private Database subnets - Without Nat Gateway */
+
+resource "aws_subnet" "PRIVATE_DB_SUBNET" {
+  count             = length(var.PRIVATE_DB_SUBNET_CIDRS)
+  vpc_id            = aws_vpc.VPC.id
+  cidr_block        = var.PRIVATE_DB_SUBNET_CIDRS[count.index]
+  availability_zone = "${var.AWS_REGION}${var.SUBNET_AZS[count.index]}"
+
+  tags = {
+      Name = "${var.APP_NAME}_${var.ENV_PREFIX}_Private_DB_Subnet${count.index + 1}"
+      Application = "${var.APP_NAME}"
+      Environment = "${var.ENV_PREFIX}"
+  }
 }

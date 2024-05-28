@@ -9,7 +9,12 @@ output "PUBLIC_SUBNET_IDS" {
   value = join(",", aws_subnet.PUBLIC_SUBNET.*.id)
 }
 
-/* Private Subnets IDs */
-output "PRIVATE_SUBNET_IDS" {
-  value = join(",", aws_subnet.PRIVATE_SUBNET.*.id)
+/* Private Application Subnets IDs */
+output "PRIVATE_APP_SUBNET_IDS" {
+  value = join(",", aws_subnet.PRIVATE_APP_SUBNET.*.id)
+}
+
+/* Private Database Subnets IDs */
+output "PRIVATE_DB_SUBNET_IDS" {
+  value = join(",", aws_subnet.PRIVATE_DB_SUBNET.*.id)
 }
