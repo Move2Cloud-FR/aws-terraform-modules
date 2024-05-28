@@ -78,7 +78,7 @@ resource "aws_appautoscaling_policy" "read_policy" {
       predefined_metric_type = "DynamoDBReadCapacityUtilization"
     }
 
-    target_value = var.autoscale_read_target
+    target_value = var.AUTOSCALE_READ_TARGET
   }
 }
 
@@ -103,6 +103,6 @@ resource "aws_appautoscaling_policy" "write_policy" {
       predefined_metric_type = "DynamoDBWriteCapacityUtilization"
     }
 
-    target_value = var.autoscale_write_target
+    target_value = var.AUTOSCALE_WRITE_TARGET
   }
 }
