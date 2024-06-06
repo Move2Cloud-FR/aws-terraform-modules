@@ -16,10 +16,10 @@ variable "HTTPS_APP_PORT" {}
 variable "NB_REPLICAS" {}
 variable "FARGATE_CPU" {}
 variable "FARGATE_MEMORY" {}
-variable "TASK_EXECUTION_ROLE_ARN" {}
-variable "CODE_DEPLOY_ROLE_ARN" {}
 variable "HEALTH_CHECK_PATH" {}
 variable "CERTIFICATE_ARN" {}
+variable "TASK_EXECUTION_ROLE_ARN" {}
+variable "TASK_ROLE_ARN" {}
 
 ########################## VPC CONFIGURATION ###############################
 variable "VPC_ID" {}

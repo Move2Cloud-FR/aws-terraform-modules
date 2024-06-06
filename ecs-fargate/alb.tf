@@ -1,11 +1,8 @@
 resource "aws_alb" "ALB" {
-  name            = "${var.APP_NAME}-${var.ENV_PREFIX}-ALB"
-  #subnets        = split(",", var.SUBNETS_IDS)
+  name            = "${var.APP_NAME}-${var.ENV_PREFIX}-alb"
   subnets         = var.SUBNETS_IDS
   security_groups = ["${aws_security_group.ALB_SG.id}"]
   idle_timeout    = 400
-  # if the inactivity of the session between the client and server surpass 400 s the session is no longer maintained.
-
   lifecycle {
     create_before_destroy = true
   }
@@ -16,47 +13,22 @@ resource "aws_alb" "ALB" {
   }
 }
 
-# For blue/green deployment we create 2 target groups
-resource "aws_alb_target_group" "ALB_TARGET_GROUP1" {
-  name        = "${var.APP_NAME}-${var.ENV_PREFIX}-TG1"
+# ALB target groups
+resource "aws_alb_target_group" "ALB_TARGET_GROUP" {
+  name        = "${var.APP_NAME}-${var.ENV_PREFIX}-alb-tg"
   port        = var.HTTP_APP_PORT
   protocol    = "HTTP"
   vpc_id      = "${var.VPC_ID}"
   target_type = "ip"
 
   health_check {
-    healthy_threshold   = "3"
+    healthy_threshold   = "5"
     interval            = "30"
     protocol            = "HTTP"
     matcher             = "200"
     timeout             = "3"
+    unhealthy_threshold = "3"
     path                = var.HEALTH_CHECK_PATH
-    unhealthy_threshold = "2"
-  }
-
-  tags = {
-    Application = "${var.APP_NAME}"
-    Environment = "${var.ENV_PREFIX}"
-  }
-
-  depends_on = [aws_alb.ALB]
-}
-
-resource "aws_alb_target_group" "ALB_TARGET_GROUP2" {
-  name        = "${var.APP_NAME}-${var.ENV_PREFIX}-TG2"
-  port        = var.HTTP_APP_PORT
-  protocol    = "HTTP"
-  vpc_id   = "${var.VPC_ID}"
-  target_type = "ip"
-
-  health_check {
-    healthy_threshold   = "3"
-    interval            = "30"
-    protocol            = "HTTP"
-    matcher             = "200"
-    timeout             = "3"
-    path                = var.HEALTH_CHECK_PATH
-    unhealthy_threshold = "2"
   }
 
   tags = {
@@ -93,18 +65,18 @@ resource "aws_alb_listener" "HTTPS_LISTENER" {
   certificate_arn   = var.CERTIFICATE_ARN
 
   default_action {
-    target_group_arn = aws_alb_target_group.ALB_TARGET_GROUP1.id
+    target_group_arn = aws_alb_target_group.ALB_TARGET_GROUP.id
     type             = "forward"
   }
 }
 
 resource "aws_alb_listener_rule" "ALB_LISTENER_RULE" {
-  depends_on   = [aws_alb_target_group.ALB_TARGET_GROUP1]
+  depends_on   = [aws_alb_target_group.ALB_TARGET_GROUP]
   listener_arn = aws_alb_listener.HTTPS_LISTENER.arn
 
   action {
     type             = "forward"
-    target_group_arn = aws_alb_target_group.ALB_TARGET_GROUP1.id
+    target_group_arn = aws_alb_target_group.ALB_TARGET_GROUP.id
   }
 
   condition {
