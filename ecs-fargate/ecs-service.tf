@@ -1,5 +1,5 @@
 resource "aws_ecs_service" "ECS_SERVICE" {
-  name                                = "${var.APP_NAME}_${var.ENV_PREFIX}_SERVICE"
+  name                                = "${var.APP_NAME}_${var.ENV_PREFIX}_service"
   cluster                             = var.ECS_CLUSTER
   task_definition                     = aws_ecs_task_definition.ECS_TASK_DEFINITION.arn
   desired_count                       = var.NB_REPLICAS
