@@ -10,8 +10,8 @@ resource "aws_secretsmanager_secret" "rds_credentials" {
   recovery_window_in_days = 0
 }
 
-variable "secrets" {
-  default = {
+locals {
+  secrets = {
     db_name    = var.DATABASE_NAME
     username   = var.DATABASE_USER
     password   = random_password.master_password.result
@@ -23,5 +23,5 @@ variable "secrets" {
 
 resource "aws_secretsmanager_secret_version" "rds_credentials_version" {
   secret_id = aws_secretsmanager_secret.rds_credentials.id
-  secret_string = jsonencode(var.secrets)
+  secret_string = jsonencode(local.secrets)
 }
