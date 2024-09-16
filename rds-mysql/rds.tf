@@ -2,7 +2,7 @@
 resource "aws_security_group" "RDS_SG" {
   name        = "${var.APP_NAME}-${var.ENV_PREFIX}-rds-sg"
   vpc_id      = "${var.VPC_ID}"
-  description = "RDS ${var.APP_NAME}-${var.ENV_PREFIX}-service security group"
+  description = "RDS ${var.APP_NAME}-${var.ENV_PREFIX} security group"
   
   ingress {
     from_port       = 3306
@@ -40,7 +40,7 @@ resource "aws_db_instance" "RDS_DB" {
   vpc_security_group_ids    = ["${aws_security_group.RDS_SG.id}"]
   db_name                   = var.DATABASE_NAME
   username                  = var.DATABASE_USER
-  password                  = var.DATABASE_PASSWORD
+  password                  = random_password.master_password.result
   skip_final_snapshot       = true
 
  # make sure rds manual password chnages is ignored
