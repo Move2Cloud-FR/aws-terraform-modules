@@ -6,10 +6,22 @@
 
 # 
 resource "aws_secretsmanager_secret" "rds_credentials" {
-  name = "${var.APP_NAME}-rds/password"
+  name = "${var.APP_NAME}/rdscredentials"
+  recovery_window_in_days = 0
 }
 
-resource "aws_secretsmanager_secret_version" "rds-credentials_version" {
+variable "secrets" {
+  default = {
+    db_name    = var.DATABASE_NAME
+    username   = var.DATABASE_USER
+    password   = random_password.master_password.result
+    endpoint   = aws_db_instance.RDS_DB.endpoint
+  }
+
+  type = map(string)
+}
+
+resource "aws_secretsmanager_secret_version" "rds_credentials_version" {
   secret_id = aws_secretsmanager_secret.rds_credentials.id
-  secret_string = random_password.master_password.result
+  secret_string = jsonencode(var.secrets)
 }
