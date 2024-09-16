@@ -17,8 +17,6 @@ locals {
     password   = random_password.master_password.result
     endpoint   = aws_db_instance.RDS_DB.endpoint
   }
-
-  type = map(string)
 }
 
 resource "aws_secretsmanager_secret_version" "rds_credentials_version" {
