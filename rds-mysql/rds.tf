@@ -2,7 +2,7 @@
 resource "aws_security_group" "RDS_SG" {
   name        = "${var.APP_NAME}-${var.ENV_PREFIX}-rds-sg"
   vpc_id      = "${var.VPC_ID}"
-  description = "RDS ${var.APP_NAME}-${var.ENV_PREFIX}-service security group"
+  description = "RDS ${var.APP_NAME}-${var.ENV_PREFIX} security group"
   
   ingress {
     from_port       = 3306
