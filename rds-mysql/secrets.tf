@@ -6,7 +6,7 @@
 
 # 
 resource "aws_secretsmanager_secret" "rds_credentials" {
-  name = "${var.APP_NAME}/rdscredentials"
+  name = "${var.APP_NAME}/rds-credentials"
   recovery_window_in_days = 0
 }
 
