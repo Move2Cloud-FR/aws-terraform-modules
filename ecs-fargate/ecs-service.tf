@@ -5,8 +5,9 @@ resource "aws_ecs_service" "ECS_SERVICE" {
   desired_count                       = var.NB_REPLICAS
   launch_type                         = "FARGATE"
   enable_execute_command              = true
-  deployment_maximum_percent          = 100
-  deployment_minimum_healthy_percent  = 0
+  deployment_maximum_percent          = 200
+  deployment_minimum_healthy_percent  = 100
+  force_new_deployment                = true
 
   network_configuration {
     security_groups  = [aws_security_group.ECS_TASKS_SG.id]
