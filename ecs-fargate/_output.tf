@@ -7,3 +7,11 @@
 output "ALB_DNS_NAME" {
   value = aws_alb.ALB.dns_name
 }
+
+/**
+  * ECS service name
+  */
+output "ALB_DNS_NAME" {
+  value = aws_ecs_service.ECS_SERVICE.name
+}
+
