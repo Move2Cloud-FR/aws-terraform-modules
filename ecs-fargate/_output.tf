@@ -11,7 +11,7 @@ output "ALB_DNS_NAME" {
 /**
   * ECS service name
   */
-output "ALB_DNS_NAME" {
+output "ECS_SERVICE_NAME" {
   value = aws_ecs_service.ECS_SERVICE.name
 }
 
