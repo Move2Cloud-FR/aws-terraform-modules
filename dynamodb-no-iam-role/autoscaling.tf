@@ -63,7 +63,7 @@ resource "aws_appautoscaling_target" "read_target" {
   resource_id        = "table/${aws_dynamodb_table.dbtable.name}"
   scalable_dimension = "dynamodb:table:ReadCapacityUnits"
   service_namespace  = "dynamodb"
-  role_arn           = var.IAM_ROLE_ARN
+  role_arn           = aws_iam_role.auto_scale_role.arn
 }
 
 resource "aws_appautoscaling_policy" "read_policy" {
@@ -88,7 +88,7 @@ resource "aws_appautoscaling_target" "write_target" {
   resource_id        = "table/${aws_dynamodb_table.dbtable.name}"
   scalable_dimension = "dynamodb:table:WriteCapacityUnits"
   service_namespace  = "dynamodb"
-  role_arn           = var.IAM_ROLE_ARN
+  role_arn           = aws_iam_role.auto_scale_role.arn
 }
 
 resource "aws_appautoscaling_policy" "write_policy" {
