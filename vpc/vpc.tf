@@ -89,7 +89,7 @@ resource "aws_route_table_association" "PUBLIC_SUBNETS_ROUTE_TABLE" {
 }
 
 /* Private Application subnets - With Nat Gateway */
-resource "aws_subnet" "PRIVATE_APP_SUBNET" {
+resource "aws_subnet" "PRIVATE_BACKEND_NAT_GAT_SUBNET" {
   count             = length(var.PRIVATE_BACKEND_NAT_GAT_SUBNET_CIDRS)
   vpc_id            = aws_vpc.VPC.id
   cidr_block        = var.PRIVATE_BACKEND_NAT_GAT_SUBNET_CIDRS[count.index]
@@ -130,7 +130,7 @@ resource "aws_route_table" "PRIVATE_APP_SUBNET_ROUTE_TABLE" {
   }
 
   tags = {
-      Name = "${var.APP_NAME}-app-private-route-table"
+      Name = "${var.APP_NAME}-private-route-table"
       Application = "${var.APP_NAME}"
       Environment = "${var.ENV_PREFIX}"
   }
@@ -138,7 +138,7 @@ resource "aws_route_table" "PRIVATE_APP_SUBNET_ROUTE_TABLE" {
 
 resource "aws_route_table_association" "PRIVATE_APP_SUBNETS_ROUTE_TABLE" {
   count          = length(var.PRIVATE_BACKEND_NAT_GAT_SUBNET_CIDRS) > 0 ? length(var.PRIVATE_BACKEND_NAT_GAT_SUBNET_CIDRS) : 0
-  subnet_id      = element(aws_subnet.PRIVATE_APP_SUBNET.*.id, count.index)
+  subnet_id      = element(aws_subnet.PRIVATE_BACKEND_NAT_GAT_SUBNET.*.id, count.index)
   route_table_id = aws_route_table.PRIVATE_APP_SUBNET_ROUTE_TABLE[0].id
 }
 

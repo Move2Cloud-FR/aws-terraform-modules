@@ -10,11 +10,11 @@ output "PUBLIC_SUBNET_IDS" {
 }
 
 /* Private Application Subnets IDs */
-output "PRIVATE_APP_SUBNET_IDS" {
-  value = join(",", aws_subnet.PRIVATE_APP_SUBNET.*.id)
+output "PRIVATE_BACKEND_NAT_GAT_SUBNET_IDS" {
+  value = join(",", aws_subnet.PRIVATE_BACKEND_NAT_GAT_SUBNET.*.id)
 }
 
 /* Private Database Subnets IDs */
-output "PRIVATE_DB_SUBNET_IDS" {
-  value = join(",", aws_subnet.PRIVATE_DB_SUBNET.*.id)
+output "PRIVATE_BACKEND_SUBNET_IDS" {
+  value = join(",", aws_subnet.PRIVATE_BACKEND_SUBNET.*.id)
 }
