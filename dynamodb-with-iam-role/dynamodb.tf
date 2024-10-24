@@ -1,69 +1,46 @@
-data "aws_iam_policy_document" "assume_role" {
-  statement {
-    actions = [
-      "sts:AssumeRole",
+resource "aws_dynamodb_table" "dbtable" {
+  name           = "${var.DB_TABLE_NAME}"
+  billing_mode   = "PROVISIONED"
+  read_capacity  = var.AUTOSCALE_MIN_READ_CAPACITY
+  write_capacity = var.AUTOSCALE_MIN_WRITE_CAPACITY
+  attribute {
+    name = "id"
+    type = "S"
+  }
+  
+  hash_key = "id"
+  
+  // adding the TTL on DynamoDB Table
+  ttl {
+    enabled        = true      // enabling TTL
+    attribute_name = "created" // the attribute name which enforces TTL, must be a Number (Timestamp)
+  }
+  
+  // configuring Point in Time Recovery 
+  point_in_time_recovery {
+    enabled = true
+  }
+  
+  // configure encryption at REST
+  server_side_encryption {
+    enabled = true // false -> use AWS Owned CMK, true -> use AWS Managed CMK, true + key arn -> use custom key
+  }
+
+  lifecycle {
+    ignore_changes = [
+      write_capacity, read_capacity
     ]
-
-    principals {
-      type        = "Service"
-      identifiers = ["application-autoscaling.amazonaws.com"]
-    }
-
-    effect = "Allow"
   }
 }
 
-resource "aws_iam_role" "auto_scale_role" {
-  name               = "${var.DB_TABLE_NAME}-autoscaling-role"
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
-}
-
-data "aws_iam_policy_document" "autoscaler" {
-  statement {
-    actions = [
-      "dynamodb:DescribeTable",
-      "dynamodb:UpdateTable",
-    ]
-
-    resources = ["${aws_dynamodb_table.dbtable.arn}"]
-
-    effect = "Allow"
-  }
-}
-
-resource "aws_iam_role_policy" "autoscaler" {
-  name   = "${var.DB_TABLE_NAME}-autoscaler-dynamodb"
-  role   = aws_iam_role.auto_scale_role.id
-  policy = data.aws_iam_policy_document.autoscaler.json
-}
-
-data "aws_iam_policy_document" "autoscaler_cloudwatch" {
-  statement {
-    actions = [
-      "cloudwatch:PutMetricAlarm",
-      "cloudwatch:DescribeAlarms",
-      "cloudwatch:DeleteAlarms",
-    ]
-
-    resources = ["${aws_dynamodb_table.dbtable.arn}"]
-
-    effect = "Allow"
-  }
-}
-
-resource "aws_iam_role_policy" "autoscaler_cloudwatch" {
-  name   = "${var.DB_TABLE_NAME}-autoscaler-cloudwatch"
-  role   = aws_iam_role.auto_scale_role.id
-  policy = data.aws_iam_policy_document.autoscaler_cloudwatch.json
-}
-
+// add autoscaling
 resource "aws_appautoscaling_target" "read_target" {
   max_capacity       = var.AUTOSCALE_MAX_READ_CAPACITY
   min_capacity       = var.AUTOSCALE_MIN_READ_CAPACITY
   resource_id        = "table/${aws_dynamodb_table.dbtable.name}"
   scalable_dimension = "dynamodb:table:ReadCapacityUnits"
   service_namespace  = "dynamodb"
-  role_arn           = aws_iam_role.auto_scale_role.arn
+  role_arn           = var.IAM_ROLE_ARN
 }
 
 resource "aws_appautoscaling_policy" "read_policy" {
@@ -88,7 +65,7 @@ resource "aws_appautoscaling_target" "write_target" {
   resource_id        = "table/${aws_dynamodb_table.dbtable.name}"
   scalable_dimension = "dynamodb:table:WriteCapacityUnits"
   service_namespace  = "dynamodb"
-  role_arn           = aws_iam_role.auto_scale_role.arn
+  role_arn           = var.IAM_ROLE_ARN
 }
 
 resource "aws_appautoscaling_policy" "write_policy" {
@@ -106,3 +83,4 @@ resource "aws_appautoscaling_policy" "write_policy" {
     target_value = var.AUTOSCALE_WRITE_TARGET
   }
 }
+
