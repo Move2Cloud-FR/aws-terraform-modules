@@ -2,7 +2,7 @@ resource "aws_appautoscaling_target" "TARGET" {
   service_namespace  = "ecs"
   resource_id        = "service/${var.ECS_CLUSTER}/${aws_ecs_service.ECS_SERVICE.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  min_capacity       = 1  #est c q j peux mettre 0 ici ? le nbre d tasks commence avec la desired capacity puis s'adapte
+  min_capacity       = 1  
   max_capacity       = 3
 }
 
@@ -10,35 +10,33 @@ resource "aws_appautoscaling_target" "TARGET" {
 
 resource "aws_appautoscaling_scheduled_action" "morning_scale_out" {
   
-  count = var.ENV_PREFIX == "dev" ? 1 : 0 #A vérifier si l'environnemnt et dans env_prefix
+  count = var.ECS_AUTO_SCALE_ENABLED ? 1 : 0 
   
   name               = "morning_scale_out"
   service_namespace  = "ecs"
   resource_id        = "service/${var.ECS_CLUSTER}/${aws_ecs_service.ECS_SERVICE.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  schedule           = "cron(0 9 ? * MON-FRI *)"
-  timezone           = "Europe/London"
+  schedule           = var.ECS_AUTO_SCALE_SCHEDULE
 
   scalable_target_action {
-    min_capacity = 1  #var.scheduled_max_capacity 
-    max_capacity = 1  #var.scheduled_max_capacity # 1
+    min_capacity = 1  
+    max_capacity = 1 
   }
 }
 
 resource "aws_appautoscaling_scheduled_action" "evening_scale_in" {
 
-  count = var.ENV_PREFIX == "dev" ? 1 : 0
+  count = var.ECS_AUTO_SCALE_ENABLED ? 1 : 0
 
   name               = "evening_scale_in"
   service_namespace  = "ecs"
   resource_id        = "service/${var.ECS_CLUSTER}/${aws_ecs_service.ECS_SERVICE.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  schedule           = "cron(0 19 ? * MON-FRI *)"
-  timezone           = "Europe/London"
+  schedule           = var.ECS_AUTO_SCALE_SCHEDULE
 
   scalable_target_action {
-    min_capacity = 0  #var.scheduled_min_capacity 
-    max_capacity = 0  #var.scheduled_min_capacity 
+    min_capacity = 0  
+    max_capacity = 0  
   }
 
   depends_on = [aws_appautoscaling_scheduled_action.morning_scale_out]
