@@ -21,6 +21,11 @@ variable "CERTIFICATE_ARN" {}
 variable "TASK_EXECUTION_ROLE_ARN" {}
 variable "TASK_ROLE_ARN" {}
 
+########################## ECS SCHEDULED AUTO SCALING ###############################
+variable "ECS_AUTO_SCALE_ENABLED" {}
+variable "ECS_AUTO_SCALE_SCHEDULE_IN" {}
+variable "ECS_AUTO_SCALE_SCHEDULE_OUT" {}
+
 ########################## VPC CONFIGURATION ###############################
 variable "VPC_ID" {}
 variable "SUBNETS_IDS" {}

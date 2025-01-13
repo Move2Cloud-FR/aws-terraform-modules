@@ -2,11 +2,49 @@ resource "aws_appautoscaling_target" "TARGET" {
   service_namespace  = "ecs"
   resource_id        = "service/${var.ECS_CLUSTER}/${aws_ecs_service.ECS_SERVICE.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  min_capacity       = 1
+  min_capacity       = 1  
   max_capacity       = 3
 }
 
-# Automatically scale capacity up by one
+###########################################################################################
+
+resource "aws_appautoscaling_scheduled_action" "morning_scale_out" {
+  
+  count = var.ECS_AUTO_SCALE_ENABLED ? 1 : 0 
+  
+  name               = "morning_scale_out"
+  service_namespace  = "ecs"
+  resource_id        = "service/${var.ECS_CLUSTER}/${aws_ecs_service.ECS_SERVICE.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  schedule           = var.ECS_AUTO_SCALE_SCHEDULE_OUT
+
+  scalable_target_action {
+    min_capacity = 1  
+    max_capacity = 1 
+  }
+}
+
+resource "aws_appautoscaling_scheduled_action" "evening_scale_in" {
+
+  count = var.ECS_AUTO_SCALE_ENABLED ? 1 : 0
+
+  name               = "evening_scale_in"
+  service_namespace  = "ecs"
+  resource_id        = "service/${var.ECS_CLUSTER}/${aws_ecs_service.ECS_SERVICE.name}"
+  scalable_dimension = "ecs:service:DesiredCount"
+  schedule           = var.ECS_AUTO_SCALE_SCHEDULE_IN
+
+  scalable_target_action {
+    min_capacity = 0  
+    max_capacity = 0  
+  }
+
+  depends_on = [aws_appautoscaling_scheduled_action.morning_scale_out]
+}
+
+###########################################################################################
+
+# Automatically scale capacity up - tiggered by CW alarm
 resource "aws_appautoscaling_policy" "UP" {
   name               = "cb_scale_up"
   service_namespace  = "ecs"
@@ -27,7 +65,7 @@ resource "aws_appautoscaling_policy" "UP" {
   depends_on = [aws_appautoscaling_target.TARGET]
 }
 
-# Automatically scale capacity down by one
+# Automatically scale capacity down by one - tiggered by CW alarm
 resource "aws_appautoscaling_policy" "DOWN" {
   name               = "cb_scale_down"
   service_namespace  = "ecs"
