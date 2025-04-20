@@ -20,13 +20,9 @@ data "template_file" "TEMPLATE_FILE" {
         "containerPort": $${app_port},
         "hostPort": $${app_port}
       }
-    ]${
-      env_variables_json != "[]" ? `,
-    "environment": $${env_variables_json}` : ``
-    }${
-      secrets_json != "[]" ? `,
-    "secrets": $${secrets_json}` : ``
-    }
+    ],
+    "environment": $${env_variables_json},
+    "secrets": $${secrets_json}
   }
 ]
 EOF
@@ -39,8 +35,8 @@ EOF
     fargate_cpu         = var.FARGATE_CPU
     fargate_memory      = var.FARGATE_MEMORY
     AWS_REGION          = var.AWS_REGION
-    env_variables_json = jsonencode(local.env_variables_list)
-    secrets_json = jsonencode(local.secrets_list)
+    env_variables_json  = var.ENV_VARIABLES != {} ? jsonencode(local.env_variables_list) : "[]"
+    secrets_json        = var.SECRETS != {} ? jsonencode(local.secrets_list) : "[]"
   }
 }
 
