@@ -22,10 +22,10 @@ data "template_file" "TEMPLATE_FILE" {
       }
     ],
     % if env_variables_json != "[]" :
-    "environment": ${env_variables_json},
+    "environment": $${env_variables_json},
     % endif
     % if secrets_json != "[]" :
-    "secrets": ${secrets_json},
+    "secrets": $${secrets_json},
     % endif
   }
 ]
