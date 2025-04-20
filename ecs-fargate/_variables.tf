@@ -21,6 +21,19 @@ variable "CERTIFICATE_ARN" {}
 variable "TASK_EXECUTION_ROLE_ARN" {}
 variable "TASK_ROLE_ARN" {}
 
+########################### ECS SERVICE CONFIGURATION ###############################
+variable "ENV_VARIABLES" {
+  description = "Environment variables to inject"
+  type        = map(string)
+  default     = {}
+}
+
+variable "SECRETS" {
+  description = "Secrets as key-value pairs (name => ARN)"
+  type        = map(string)
+  default     = {}
+}
+
 ########################## ECS SCHEDULED AUTO SCALING ###############################
 variable "ECS_AUTO_SCALE_ENABLED" {}
 variable "ECS_AUTO_SCALE_SCHEDULE_IN" {}
@@ -29,5 +42,6 @@ variable "ECS_AUTO_SCALE_SCHEDULE_OUT" {}
 ########################## VPC CONFIGURATION ###############################
 variable "VPC_ID" {}
 variable "SUBNETS_IDS" {}
+
 
 

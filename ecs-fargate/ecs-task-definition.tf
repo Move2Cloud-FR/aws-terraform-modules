@@ -20,7 +20,13 @@ data "template_file" "TEMPLATE_FILE" {
         "containerPort": $${app_port},
         "hostPort": $${app_port}
       }
-    ]
+    ],
+    % if env_variables_json != "[]" :
+    "environment": ${env_variables_json},
+    % endif
+    % if secrets_json != "[]" :
+    "secrets": ${secrets_json},
+    % endif
   }
 ]
 EOF
@@ -33,6 +39,8 @@ EOF
     fargate_cpu         = var.FARGATE_CPU
     fargate_memory      = var.FARGATE_MEMORY
     AWS_REGION          = var.AWS_REGION
+    env_variables_json = jsonencode(local.env_variables_list)
+    secrets_json = jsonencode(local.secrets_list)
   }
 }
 
@@ -45,4 +53,21 @@ resource "aws_ecs_task_definition" "ECS_TASK_DEFINITION" {
   requires_compatibilities = ["FARGATE"]
   cpu                      = var.FARGATE_CPU
   memory                   = var.FARGATE_MEMORY
+}
+
+# ===== Locals to format data =====
+locals {
+  env_variables_list = [
+    for key, val in var.ENV_VARIABLES : {
+      name  = key
+      value = val
+    }
+  ]
+
+  secrets_list = [
+    for key, val in var.SECRETS : {
+      name      = key
+      valueFrom = val
+    }
+  ]
 }
