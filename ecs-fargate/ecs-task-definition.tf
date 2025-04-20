@@ -20,13 +20,13 @@ data "template_file" "TEMPLATE_FILE" {
         "containerPort": $${app_port},
         "hostPort": $${app_port}
       }
-    ],
-    % if env_variables_json != "[]" :
-    "environment": $${env_variables_json},
-    % endif
-    % if secrets_json != "[]" :
-    "secrets": $${secrets_json},
-    % endif
+    ]${
+      env_variables_json != "[]" ? `,
+    "environment": $${env_variables_json}` : ``
+    }${
+      secrets_json != "[]" ? `,
+    "secrets": $${secrets_json}` : ``
+    }
   }
 ]
 EOF
