@@ -51,19 +51,19 @@ resource "aws_ecs_task_definition" "ECS_TASK_DEFINITION" {
   memory                   = var.FARGATE_MEMORY
 }
 
-# ===== Locals to format data =====
-# locals {
-#   env_variables_list = [
-#     for key, val in var.ENV_VARIABLES : {
-#       name  = key
-#       value = val
-#     }
-#   ]
+ #===== Locals to format data =====
+ locals {
+   env_variables_list = [
+     for key, val in var.ENV_VARIABLES : {
+       name  = key
+       value = val
+     }
+   ]
 
-#   secrets_list = [
-#     for key, val in var.SECRETS : {
-#       name      = key
-#       valueFrom = val
-#     }
-#   ]
-# }
+   secrets_list = [
+     for key, val in var.SECRETS : {
+       name      = key
+       valueFrom = val
+     }
+   ]
+ }
