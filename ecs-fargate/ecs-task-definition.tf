@@ -36,7 +36,7 @@ EOF
     fargate_memory      = var.FARGATE_MEMORY
     AWS_REGION          = var.AWS_REGION
     env_variables_json  = var.ENV_VARIABLES != {} ? jsonencode(local.env_variables_list) : "[]"
-    secrets_json        = var.SECRETS != {} ? var.SECRETS : "[]"
+    secrets_json        = var.SECRETS != {} ? jsonencode(local.secrets_list) : "[]"
   }
 }
 
