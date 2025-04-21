@@ -23,13 +23,13 @@ variable "TASK_ROLE_ARN" {}
 
 ########################### ECS SERVICE CONFIGURATION ###############################
 variable "ENV_VARIABLES" {
-  description = "Environment variables to inject"
+  description = "Task definition Environment variables if needed"
   type        = map(string)
   default     = {}
 }
 
 variable "SECRETS" {
-  description = "Secrets as key-value pairs (name => ARN)"
+  description = "Task definition Secrets as key-value pairs if needed"
   type        = map(string)
   default     = {}
 }

@@ -63,7 +63,7 @@ locals {
   secrets_list = [
     for key, val in var.SECRETS : {
       name      = key
-      valueFrom = val
+      value = val
     }
   ]
 }
