@@ -36,7 +36,7 @@ EOF
     fargate_memory      = var.FARGATE_MEMORY
     AWS_REGION          = var.AWS_REGION
     env_variables_json  = var.ENV_VARIABLES != {} ? jsonencode(local.env_variables_list) : "[]"
-    secrets_json        = var.SECRETS != {} ? jsonencode(local.secrets_list) : "[]"
+    secrets_json        = var.SECRETS != {} ? var.SECRETS : "[]"
   }
 }
 
@@ -52,18 +52,18 @@ resource "aws_ecs_task_definition" "ECS_TASK_DEFINITION" {
 }
 
 # ===== Locals to format data =====
-locals {
-  env_variables_list = [
-    for key, val in var.ENV_VARIABLES : {
-      name  = key
-      value = val
-    }
-  ]
+# locals {
+#   env_variables_list = [
+#     for key, val in var.ENV_VARIABLES : {
+#       name  = key
+#       value = val
+#     }
+#   ]
 
-  secrets_list = [
-    for key, val in var.SECRETS : {
-      name      = key
-      value = val
-    }
-  ]
-}
+#   secrets_list = [
+#     for key, val in var.SECRETS : {
+#       name      = key
+#       valueFrom = val
+#     }
+#   ]
+# }
