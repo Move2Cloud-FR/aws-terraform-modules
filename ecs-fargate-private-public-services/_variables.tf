@@ -25,7 +25,11 @@ variable "NB_REPLICAS" {}
 variable "FARGATE_CPU" {}
 variable "FARGATE_MEMORY" {}
 variable "HEALTH_CHECK_PATH" {}
-variable "CERTIFICATE_ARN" {}
+variable "CERTIFICATE_ARN" {
+  description = "ARN of the SSL certificate for HTTPS"
+  type        = string
+  default     = ""
+}
 variable "TASK_EXECUTION_ROLE_ARN" {}
 variable "TASK_ROLE_ARN" {}
 

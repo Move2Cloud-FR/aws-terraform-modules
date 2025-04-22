@@ -46,8 +46,14 @@ resource "aws_alb_listener" "HTTP_LISTENER" {
   protocol          = "HTTP"
 
   default_action {
-    type = "redirect"
+    type = var.INTERNAL_ALB ? "forward" : "redirect"
 
+    # Forward traffic directly to the target group if internal
+    forward {
+      target_group_arn = aws_alb_target_group.ALB_TARGET_GROUP.id
+    }
+
+    # Redirect to HTTPS if public
     redirect {
       port        = var.HTTPS_APP_PORT
       protocol    = "HTTPS"
@@ -59,6 +65,7 @@ resource "aws_alb_listener" "HTTP_LISTENER" {
 }
 
 resource "aws_alb_listener" "HTTPS_LISTENER" {
+  count             = var.INTERNAL_ALB ? 0 : 1
   load_balancer_arn = aws_alb.ALB.arn
   port              = var.HTTPS_APP_PORT
   protocol          = "HTTPS"
@@ -73,7 +80,7 @@ resource "aws_alb_listener" "HTTPS_LISTENER" {
 
 resource "aws_alb_listener_rule" "ALB_LISTENER_RULE" {
   depends_on   = [aws_alb_target_group.ALB_TARGET_GROUP]
-  listener_arn = aws_alb_listener.HTTPS_LISTENER.arn
+  listener_arn = var.INTERNAL_ALB ? aws_alb_listener.HTTP_LISTENER.arn : aws_alb_listener.HTTPS_LISTENER.arn
 
   action {
     type             = "forward"
