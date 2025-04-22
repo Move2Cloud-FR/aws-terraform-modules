@@ -4,10 +4,17 @@ variable "ENV_PREFIX" {}
 
 ######################## ROUTE 53 CONFIGURATION ############################
 variable "AWS_REGION" {}
-variable "PRIVATE_ZONE" {}
-variable "PUBLIC_ZONE" {}
 variable "RECORD" {}
-
+variable "PUBLIC_ZONE" {
+  description = "The name of the public Route 53 zone"
+  type        = string
+  default     = ""
+}
+variable "PRIVATE_ZONE" {
+  description = "The name of the private Route 53 zone"
+  type        = string
+  default     = ""
+}
 ########################## ECS CONFIGURATION ###############################
 variable "ECS_CLUSTER" {}
 variable "DOCKER_IMAGE_NAME" {}
@@ -42,8 +49,18 @@ variable "ECS_AUTO_SCALE_SCHEDULE_OUT" {}
 
 ########################## VPC CONFIGURATION ###############################
 variable "VPC_ID" {}
-variable "PRIVATE_SUBNETS_IDS" {}
-variable "PUBLIC_SUBNETS_IDS" {}
+variable "PRIVATE_SUBNETS_IDS" {
+  description = "List of private subnet IDs for public ALB"
+  type        = list(string)
+  default     = []
+}
+
+variable "PUBLIC_SUBNETS_IDS" {
+  description = "List of public subnet IDs for public ALB"
+  type        = list(string)
+  default     = []
+}
+
 
 ########################## ALB CONFIGURATION ###############################
 variable "INTERNAL_ALB" {
