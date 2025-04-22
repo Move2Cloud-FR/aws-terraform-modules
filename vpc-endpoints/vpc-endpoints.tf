@@ -70,7 +70,7 @@ resource "aws_security_group" "vpc_endpoint_sg" {
   ingress {
     from_port   = -1
     to_port     = -1
-    protocol    = "tcp"
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
