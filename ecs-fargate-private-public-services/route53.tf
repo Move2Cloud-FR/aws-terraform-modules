@@ -1,5 +1,6 @@
 data "aws_route53_zone" "ZONE" {
   name = var.INTERNAL_ALB ? var.PRIVATE_ZONE : var.PUBLIC_ZONE
+  private_zone = var.INTERNAL_ALB ? true : false
 }
 
 resource "aws_route53_record" "RECORD" {
