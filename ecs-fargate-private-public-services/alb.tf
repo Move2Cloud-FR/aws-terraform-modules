@@ -1,6 +1,7 @@
 resource "aws_alb" "ALB" {
   name            = "${var.APP_NAME}-${var.ENV_PREFIX}-alb"
-  subnets         = var.SUBNETS_IDS
+  subnets         = var.INTERNAL_ALB ? var.PRIVATE_SUBNETS_IDS : var.PUBLIC_SUBNETS_IDS
+  internal        = var.INTERNAL_ALB ? true : false
   security_groups = ["${aws_security_group.ALB_SG.id}"]
   idle_timeout    = 400
   lifecycle {
