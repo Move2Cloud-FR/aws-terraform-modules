@@ -42,6 +42,7 @@ resource "aws_vpc_endpoint" "cloudwatch" {
   vpc_id       = var.VPC_ID
   service_name = "com.amazonaws.${var.AWS_REGION}.monitoring"
   vpc_endpoint_type = "Interface"
+  private_dns_enabled = true
   subnet_ids   = var.PRIVATE_SUBNETS_IDS
   security_group_ids = [aws_security_group.vpc_endpoint_sg.id]
 
