@@ -40,7 +40,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
 
 resource "aws_vpc_endpoint" "cloudwatch" {
   vpc_id       = var.VPC_ID
-  service_name = "com.amazonaws.${var.AWS_REGION}.monitoring"
+  service_name = "com.amazonaws.${var.AWS_REGION}.logs"
   vpc_endpoint_type = "Interface"
   private_dns_enabled = true
   subnet_ids   = var.PRIVATE_SUBNETS_IDS
