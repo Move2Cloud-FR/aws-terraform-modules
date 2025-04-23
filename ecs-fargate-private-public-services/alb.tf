@@ -50,7 +50,9 @@ resource "aws_alb_listener" "HTTP_LISTENER" {
 
     # Forward traffic directly to the target group if internal
     forward {
-      target_group_arn = aws_alb_target_group.ALB_TARGET_GROUP.id
+      target_group {
+        arn = aws_alb_target_group.ALB_TARGET_GROUP.id
+      }
     }
 
     # Redirect to HTTPS if public
