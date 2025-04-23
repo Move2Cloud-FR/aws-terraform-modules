@@ -82,7 +82,7 @@ resource "aws_alb_listener" "HTTPS_LISTENER" {
 
 resource "aws_alb_listener_rule" "ALB_LISTENER_RULE" {
   depends_on   = [aws_alb_target_group.ALB_TARGET_GROUP]
-  listener_arn = var.INTERNAL_ALB ? aws_alb_listener.HTTP_LISTENER.arn : aws_alb_listener.HTTPS_LISTENER.arn
+  listener_arn = var.INTERNAL_ALB ? aws_alb_listener.HTTP_LISTENER.arn : aws_alb_listener.HTTPS_LISTENER[0].arn
 
   action {
     type             = "forward"
