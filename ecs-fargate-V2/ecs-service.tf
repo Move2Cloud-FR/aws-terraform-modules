@@ -12,7 +12,7 @@ resource "aws_ecs_service" "ECS_SERVICE" {
   network_configuration {
     security_groups  = [aws_security_group.ECS_TASKS_SG.id]
     subnets          = var.INTERNAL_ALB ? var.PRIVATE_SUBNETS_IDS : var.PUBLIC_SUBNETS_IDS
-    assign_public_ip = true
+    assign_public_ip = true 
   }
 
   load_balancer {
