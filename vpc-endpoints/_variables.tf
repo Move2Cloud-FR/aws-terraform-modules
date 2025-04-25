@@ -3,15 +3,9 @@ variable "VPC_ID" {
   type        = string
 }
 
-variable "PRIVATE_SUBNETS_IDS" {
-  description = "List of private subnet IDs"
-  type        = list(string)
-}
+variable "PRIVATE_SUBNETS_IDS" {}
 
-variable "ROUTE_TABLE_IDS" {
-  description = "List of route table IDs for Gateway endpoints"
-  type        = list(string)
-}
+variable "ROUTE_TABLE_IDS" {}
 
 variable "AWS_REGION" {
   description = "AWS region"
