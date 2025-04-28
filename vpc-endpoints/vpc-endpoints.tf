@@ -1,3 +1,4 @@
+############### Dynamodb VPC Endpoint ###############
 resource "aws_vpc_endpoint" "dynamodb" {
   vpc_id           = var.VPC_ID
   service_name     = "com.amazonaws.${var.AWS_REGION}.dynamodb"
@@ -10,6 +11,7 @@ resource "aws_vpc_endpoint" "dynamodb" {
   }
 }
 
+################ ECR VPC Endpoint ###############
 resource "aws_vpc_endpoint" "ecr_api" {
   vpc_id       = var.VPC_ID
   service_name = "com.amazonaws.${var.AWS_REGION}.ecr.api"
@@ -38,6 +40,7 @@ resource "aws_vpc_endpoint" "ecr_dkr" {
   }
 }
 
+############### CloudWatch VPC Endpoint ###############
 resource "aws_vpc_endpoint" "cloudwatch" {
   vpc_id       = var.VPC_ID
   service_name = "com.amazonaws.${var.AWS_REGION}.logs"
@@ -52,6 +55,7 @@ resource "aws_vpc_endpoint" "cloudwatch" {
   }
 }
 
+############### S3 VPC Endpoint ###############
 resource "aws_vpc_endpoint" "s3" {
   vpc_id       = var.VPC_ID
   service_name = "com.amazonaws.${var.AWS_REGION}.s3"
@@ -64,6 +68,23 @@ resource "aws_vpc_endpoint" "s3" {
   }
 }
 
+############### Bedrock VPC Endpoint ###############
+resource "aws_vpc_endpoint" "bedrock" {
+  vpc_id       = var.VPC_ID
+  service_name = "com.amazonaws.${var.AWS_REGION}.bedrock-agent-runtime"
+  vpc_endpoint_type = "Interface"
+  private_dns_enabled = true
+  subnet_ids   = local.private_subnets
+  security_group_ids = [aws_security_group.vpc_endpoint_sg.id]
+
+  tags = {
+    Name        = "${var.APP_NAME}-${var.ENV_PREFIX}-bedrock-endpoint"
+    Environment = var.ENV_PREFIX
+  }
+}
+
+
+############### VPC Endpoint Security Group ###############
 resource "aws_security_group" "vpc_endpoint_sg" {
   name        = "${var.APP_NAME}-${var.ENV_PREFIX}-vpc-endpoint-sg"
   description = "Security group for VPC endpoints"
