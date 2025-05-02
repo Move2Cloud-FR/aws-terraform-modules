@@ -12,6 +12,12 @@ variable "AWS_REGION" {
   type        = string
 }
 
+variable "AWS_BEDROCK_REGION" {
+  description = "AWS Bedrock region"
+  type        = string
+}
+  
+
 variable "APP_NAME" {
   description = "Project name"
   type        = string
