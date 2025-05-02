@@ -71,7 +71,7 @@ resource "aws_vpc_endpoint" "s3" {
 ############### Bedrock VPC Endpoint ###############
 resource "aws_vpc_endpoint" "bedrock" {
   vpc_id       = var.VPC_ID
-  service_name = "com.amazonaws.${var.AWS_BEDROCK_REGION}.bedrock-agent-runtime"
+  service_name = "com.amazonaws.${var.AWS_REGION}.bedrock-agent-runtime"
   vpc_endpoint_type = "Interface"
   private_dns_enabled = true
   subnet_ids   = local.private_subnets
