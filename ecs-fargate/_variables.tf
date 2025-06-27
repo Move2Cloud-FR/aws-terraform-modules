@@ -35,9 +35,23 @@ variable "SECRETS" {
 }
 
 ########################## ECS SCHEDULED AUTO SCALING ###############################
-variable "ECS_AUTO_SCALE_ENABLED" {}
-variable "ECS_AUTO_SCALE_SCHEDULE_IN" {}
-variable "ECS_AUTO_SCALE_SCHEDULE_OUT" {}
+variable "ECS_AUTO_SCALE_ENABLED" {
+  description = "Enable ECS auto scaling schedule"
+  type        = bool
+  default     = false
+}
+
+variable "ECS_AUTO_SCALE_SCHEDULE_IN" {
+  description = "Schedule expression for scaling in (only required if ECS_AUTO_SCALE_ENABLED is true)"
+  type        = string
+  default     = null
+}
+
+variable "ECS_AUTO_SCALE_SCHEDULE_OUT" {
+  description = "Schedule expression for scaling out (only required if ECS_AUTO_SCALE_ENABLED is true)"
+  type        = string
+  default     = null
+}
 
 ########################## VPC CONFIGURATION ###############################
 variable "VPC_ID" {}
