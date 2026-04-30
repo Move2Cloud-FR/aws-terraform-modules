@@ -21,6 +21,7 @@ resource "aws_security_group" "ECS_SERVICE_SG" {
   }
 
   tags = {
+    Name = "$Security group for ${var.APP_NAME} ECS service"
     Application = "${var.APP_NAME}"
     Environment = "${var.ENV_PREFIX}"
   }
@@ -56,6 +57,7 @@ resource "aws_security_group" "ALB_SG" {
   }
 
   tags = {
+    Name = "$Security group for ${var.APP_NAME} ALB"
     Application = "${var.APP_NAME}"
     Environment = "${var.ENV_PREFIX}"
   }
@@ -89,6 +91,7 @@ resource "aws_security_group" "ECS_TASKS_SG" {
   }
 
   tags = {
+    Name = "$Security group for ${var.APP_NAME} ECS tasks"
     Application = "${var.APP_NAME}"
     Environment = "${var.ENV_PREFIX}"
   }
