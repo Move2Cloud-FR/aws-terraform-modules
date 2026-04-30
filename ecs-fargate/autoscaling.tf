@@ -88,7 +88,7 @@ resource "aws_appautoscaling_policy" "DOWN" {
 
 # CloudWatch alarm that triggers the autoscaling up policy
 resource "aws_cloudwatch_metric_alarm" "SERVICE_CPU_HIGH" {
-  alarm_name          = "cb_cpu_utilization_high"
+  alarm_name          = "${aws_ecs_service.ECS_SERVICE.name}-cpu-high"
   comparison_operator = "GreaterThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"
@@ -107,7 +107,7 @@ resource "aws_cloudwatch_metric_alarm" "SERVICE_CPU_HIGH" {
 
 # CloudWatch alarm that triggers the autoscaling down policy
 resource "aws_cloudwatch_metric_alarm" "SERVICE_CPU_LOW" {
-  alarm_name          = "cb_cpu_utilization_low"
+  alarm_name          = "${aws_ecs_service.ECS_SERVICE.name}-cpu-low"
   comparison_operator = "LessThanOrEqualToThreshold"
   evaluation_periods  = "2"
   metric_name         = "CPUUtilization"

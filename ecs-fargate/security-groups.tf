@@ -2,7 +2,7 @@
   * Security group for ECS service
   */
 resource "aws_security_group" "ECS_SERVICE_SG" {
-  name        = "${var.APP_NAME}_${var.ENV_PREFIX}_ECS"
+  name        = "${var.APP_NAME}_ECS"
   vpc_id      = "${var.VPC_ID}"
   description = "Security group for ECS service"
 
@@ -21,7 +21,6 @@ resource "aws_security_group" "ECS_SERVICE_SG" {
   }
 
   tags = {
-    Name = "${var.APP_NAME}_${var.ENV_PREFIX}_ECS_SERVICE_SG"
     Application = "${var.APP_NAME}"
     Environment = "${var.ENV_PREFIX}"
   }
@@ -31,7 +30,7 @@ resource "aws_security_group" "ECS_SERVICE_SG" {
   * We will utilize ALB and allow web access only from ALB
   */
 resource "aws_security_group" "ALB_SG" {
-  name        = "${var.APP_NAME}_${var.ENV_PREFIX}_ALB"
+  name        = "${var.APP_NAME}_ALB"
   vpc_id      = "${var.VPC_ID}"
   description = "Security group for ALBs"
 
@@ -57,7 +56,6 @@ resource "aws_security_group" "ALB_SG" {
   }
 
   tags = {
-    Name = "${var.APP_NAME}_${var.ENV_PREFIX}_ALB_SG"
     Application = "${var.APP_NAME}"
     Environment = "${var.ENV_PREFIX}"
   }
@@ -65,7 +63,7 @@ resource "aws_security_group" "ALB_SG" {
 
 # Traffic to the ECS cluster should only come from the ALB
 resource "aws_security_group" "ECS_TASKS_SG" {
-  name        = "${var.APP_NAME}_${var.ENV_PREFIX}_TASK"
+  name        = "${var.APP_NAME}_ECS_TASK"
   description = "allow inbound access from the ALB only"
   vpc_id      = "${var.VPC_ID}"
 
@@ -91,7 +89,6 @@ resource "aws_security_group" "ECS_TASKS_SG" {
   }
 
   tags = {
-    Name = "${var.APP_NAME}_${var.ENV_PREFIX}_ECS_TASK_SG"
     Application = "${var.APP_NAME}"
     Environment = "${var.ENV_PREFIX}"
   }

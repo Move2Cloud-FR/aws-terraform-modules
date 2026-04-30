@@ -1,5 +1,5 @@
 resource "aws_alb" "ALB" {
-  name            = "${var.APP_NAME}-${var.ENV_PREFIX}-alb"
+  name            = "${var.APP_NAME}-alb"
   subnets         = var.SUBNETS_IDS
   security_groups = ["${aws_security_group.ALB_SG.id}"]
   idle_timeout    = 400
@@ -15,7 +15,7 @@ resource "aws_alb" "ALB" {
 
 # ALB target groups
 resource "aws_alb_target_group" "ALB_TARGET_GROUP" {
-  name        = "${var.APP_NAME}-${var.ENV_PREFIX}-alb-tg"
+  name        = "${var.APP_NAME}-alb-tg"
   port        = var.HTTP_APP_PORT
   protocol    = "HTTP"
   vpc_id      = "${var.VPC_ID}"
