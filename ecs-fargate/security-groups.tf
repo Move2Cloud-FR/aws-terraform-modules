@@ -2,9 +2,9 @@
   * Security group for ECS service
   */
 resource "aws_security_group" "ECS_SERVICE_SG" {
-  name        = "${var.APP_NAME}_ECS"
+  name        = "${var.APP_NAME}-ecs-sg"
   vpc_id      = "${var.VPC_ID}"
-  description = "Security group for ECS service"
+  description = "Security group for ${var.APP_NAME} ECS service"
 
   egress {
     from_port   = 0
@@ -30,9 +30,9 @@ resource "aws_security_group" "ECS_SERVICE_SG" {
   * We will utilize ALB and allow web access only from ALB
   */
 resource "aws_security_group" "ALB_SG" {
-  name        = "${var.APP_NAME}_ALB"
+  name        = "${var.APP_NAME}-alb-sg"
   vpc_id      = "${var.VPC_ID}"
-  description = "Security group for ALBs"
+  description = "Security group for ${var.APP_NAME} ALB"
 
   ingress {
     from_port   = var.HTTP_APP_PORT
@@ -63,8 +63,8 @@ resource "aws_security_group" "ALB_SG" {
 
 # Traffic to the ECS cluster should only come from the ALB
 resource "aws_security_group" "ECS_TASKS_SG" {
-  name        = "${var.APP_NAME}_ECS_TASK"
-  description = "allow inbound access from the ALB only"
+  name        = "${var.APP_NAME}-ecs-task-sg"
+  description = "Security group for ${var.APP_NAME} ECS tasks"
   vpc_id      = "${var.VPC_ID}"
 
   ingress {
