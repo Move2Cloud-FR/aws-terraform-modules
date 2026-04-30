@@ -41,7 +41,7 @@ EOF
 }
 
 resource "aws_ecs_task_definition" "ECS_TASK_DEFINITION" {
-  family                   = "${var.APP_NAME}_task_def"
+  family                   = "${var.APP_NAME}-tas-kdef"
   container_definitions    = data.template_file.TEMPLATE_FILE.rendered
   execution_role_arn       = var.TASK_EXECUTION_ROLE_ARN
   task_role_arn            = var.TASK_ROLE_ARN 
