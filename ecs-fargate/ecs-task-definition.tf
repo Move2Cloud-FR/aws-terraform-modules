@@ -4,9 +4,6 @@ data "template_file" "TEMPLATE_FILE" {
   {
     "name": "$${app_name}",
     "image": "$${webapp_docker_image}",
-    "cpu": $${fargate_cpu},
-    "memory": $${fargate_memory},
-    "networkMode": "awsvpc",
     "logConfiguration": {
         "logDriver": "awslogs",
         "options": {
@@ -32,8 +29,6 @@ EOF
     app_name            = "${var.APP_NAME}"
     env_prefix          = "${var.ENV_PREFIX}"
     app_port            = var.HTTP_APP_PORT
-    fargate_cpu         = var.FARGATE_CPU
-    fargate_memory      = var.FARGATE_MEMORY
     AWS_REGION          = var.AWS_REGION
     env_variables_json  = var.ENV_VARIABLES != {} ? jsonencode(local.env_variables_list) : "[]"
     secrets_json        = var.SECRETS != {} ? jsonencode(local.secrets_list) : "[]"
