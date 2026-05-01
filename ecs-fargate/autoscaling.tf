@@ -2,8 +2,8 @@ resource "aws_appautoscaling_target" "TARGET" {
   service_namespace  = "ecs"
   resource_id        = "service/${var.ECS_CLUSTER}/${aws_ecs_service.ECS_SERVICE.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  min_capacity       = 1
-  max_capacity       = 3
+  min_capacity       = var.ECS_MIN_CAPACITY
+  max_capacity       = var.ECS_MAX_CAPACITY
 }
 
 ###########################################################################################
@@ -19,8 +19,8 @@ resource "aws_appautoscaling_scheduled_action" "morning_scale_out" {
   schedule           = var.ECS_AUTO_SCALE_SCHEDULE_OUT
 
   scalable_target_action {
-    min_capacity = 1
-    max_capacity = 3
+    min_capacity = var.ECS_MIN_CAPACITY
+    max_capacity = var.ECS_MAX_CAPACITY
   }
 }
 

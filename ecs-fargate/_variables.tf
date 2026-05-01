@@ -53,6 +53,18 @@ variable "ECS_AUTO_SCALE_SCHEDULE_OUT" {
   default     = null
 }
 
+variable "ECS_MIN_CAPACITY" {
+  description = "Minimum number of ECS tasks"
+  type        = number
+  default     = 1
+}
+
+variable "ECS_MAX_CAPACITY" {
+  description = "Maximum number of ECS tasks"
+  type        = number
+  default     = 3
+}
+
 ########################## VPC CONFIGURATION ###############################
 variable "VPC_ID" {}
 variable "SUBNETS_IDS" {}
