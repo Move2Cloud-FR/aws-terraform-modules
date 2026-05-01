@@ -2,16 +2,16 @@ resource "aws_appautoscaling_target" "TARGET" {
   service_namespace  = "ecs"
   resource_id        = "service/${var.ECS_CLUSTER}/${aws_ecs_service.ECS_SERVICE.name}"
   scalable_dimension = "ecs:service:DesiredCount"
-  min_capacity       = 1  
+  min_capacity       = 1
   max_capacity       = 3
 }
 
 ###########################################################################################
 
 resource "aws_appautoscaling_scheduled_action" "morning_scale_out" {
-  
-  count = var.ECS_AUTO_SCALE_ENABLED ? 1 : 0 
-  
+
+  count = var.ECS_AUTO_SCALE_ENABLED ? 1 : 0
+
   name               = "morning_scale_out"
   service_namespace  = "ecs"
   resource_id        = "service/${var.ECS_CLUSTER}/${aws_ecs_service.ECS_SERVICE.name}"
@@ -19,8 +19,8 @@ resource "aws_appautoscaling_scheduled_action" "morning_scale_out" {
   schedule           = var.ECS_AUTO_SCALE_SCHEDULE_OUT
 
   scalable_target_action {
-    min_capacity = 1  
-    max_capacity = 1 
+    min_capacity = 1
+    max_capacity = 3
   }
 }
 
@@ -35,8 +35,8 @@ resource "aws_appautoscaling_scheduled_action" "evening_scale_in" {
   schedule           = var.ECS_AUTO_SCALE_SCHEDULE_IN
 
   scalable_target_action {
-    min_capacity = 0  
-    max_capacity = 0  
+    min_capacity = 1
+    max_capacity = 1
   }
 
   depends_on = [aws_appautoscaling_scheduled_action.morning_scale_out]
@@ -46,7 +46,7 @@ resource "aws_appautoscaling_scheduled_action" "evening_scale_in" {
 
 # Automatically scale capacity up - tiggered by CW alarm
 resource "aws_appautoscaling_policy" "UP" {
-  name               = "cb_scale_up"
+  name               = "${aws_ecs_service.ECS_SERVICE.name}-scale-up"
   service_namespace  = "ecs"
   resource_id        = "service/${var.ECS_CLUSTER}/${aws_ecs_service.ECS_SERVICE.name}"
   scalable_dimension = "ecs:service:DesiredCount"
@@ -67,7 +67,7 @@ resource "aws_appautoscaling_policy" "UP" {
 
 # Automatically scale capacity down by one - tiggered by CW alarm
 resource "aws_appautoscaling_policy" "DOWN" {
-  name               = "cb_scale_down"
+  name               = "${aws_ecs_service.ECS_SERVICE.name}-scale-down"
   service_namespace  = "ecs"
   resource_id        = "service/${var.ECS_CLUSTER}/${aws_ecs_service.ECS_SERVICE.name}"
   scalable_dimension = "ecs:service:DesiredCount"
