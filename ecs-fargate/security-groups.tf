@@ -49,6 +49,17 @@ resource "aws_security_group" "ALB_SG" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # The plain HTTP port redirected to HTTPS, when there is one.
+  dynamic "ingress" {
+    for_each = var.HTTP_REDIRECT_PORT == null ? [] : [var.HTTP_REDIRECT_PORT]
+    content {
+      from_port   = ingress.value
+      to_port     = ingress.value
+      protocol    = "TCP"
+      cidr_blocks = ["0.0.0.0/0"]
+    }
+  }
+
   egress {
     from_port   = 0
     to_port     = 0

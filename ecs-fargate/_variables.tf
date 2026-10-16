@@ -65,6 +65,19 @@ variable "ECS_MAX_CAPACITY" {
   default     = 3
 }
 
+########################## OTHER ADDRESSES OF THE SERVICE ##################
+variable "REDIRECT_HOSTS" {
+  description = "Other host names the ALB answers for, redirected (301) to RECORD, path and query kept (www, older domains). CERTIFICATE_ARN must cover them; their DNS records are not made here."
+  type        = list(string)
+  default     = []
+}
+
+variable "HTTP_REDIRECT_PORT" {
+  description = "A plain HTTP port (80) answered by a redirect (301) to HTTPS, same host, path and query; null for none. It must differ from HTTP_APP_PORT."
+  type        = number
+  default     = null
+}
+
 ########################## VPC CONFIGURATION ###############################
 variable "VPC_ID" {}
 variable "SUBNETS_IDS" {}

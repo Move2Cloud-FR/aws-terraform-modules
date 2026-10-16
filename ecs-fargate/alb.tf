@@ -73,6 +73,8 @@ resource "aws_alb_listener" "HTTPS_LISTENER" {
 resource "aws_alb_listener_rule" "ALB_LISTENER_RULE" {
   depends_on   = [aws_alb_target_group.ALB_TARGET_GROUP]
   listener_arn = aws_alb_listener.HTTPS_LISTENER.arn
+  # After the redirect of the other host names (priority 1) when there are some.
+  priority = length(var.REDIRECT_HOSTS) == 0 ? null : 100
 
   action {
     type             = "forward"
@@ -82,6 +84,48 @@ resource "aws_alb_listener_rule" "ALB_LISTENER_RULE" {
   condition {
     path_pattern {
       values = ["/*"]
+    }
+  }
+}
+
+# Plain HTTP on its usual port: to HTTPS, same host, path and query.
+resource "aws_alb_listener" "HTTP_REDIRECT_LISTENER" {
+  count             = var.HTTP_REDIRECT_PORT == null ? 0 : 1
+  load_balancer_arn = aws_alb.ALB.arn
+  port              = var.HTTP_REDIRECT_PORT
+  protocol          = "HTTP"
+
+  default_action {
+    type = "redirect"
+
+    redirect {
+      port        = var.HTTPS_APP_PORT
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+}
+
+# The other host names of the service (www, older domains): to RECORD, path and query kept.
+resource "aws_alb_listener_rule" "REDIRECT_HOSTS_RULE" {
+  count        = length(var.REDIRECT_HOSTS) == 0 ? 0 : 1
+  listener_arn = aws_alb_listener.HTTPS_LISTENER.arn
+  priority     = 1
+
+  action {
+    type = "redirect"
+
+    redirect {
+      host        = var.RECORD
+      port        = var.HTTPS_APP_PORT
+      protocol    = "HTTPS"
+      status_code = "HTTP_301"
+    }
+  }
+
+  condition {
+    host_header {
+      values = var.REDIRECT_HOSTS
     }
   }
 }
